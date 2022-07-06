@@ -25,7 +25,8 @@ const NavbarComponent = (props) => {
                     <div className="collapse navbar-collapse" id="eshopNavbar">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li>
-                                <span className="nav-link text-light">
+                                <span className="nav-link text-light" 
+                                onClick={()=>navigate('/product/admin')}>
                                     Product
                                 </span>
                             </li>
@@ -33,7 +34,7 @@ const NavbarComponent = (props) => {
                         <div className="d-flex">
                             <div className="btn-group">
                                 <button className="btn btn-outline-light">Sign In</button>
-                                <button className="btn btn-primary border" 
+                                <button className="btn btn-primary" 
                                 type="button" 
                                 onClick={()=>navigate('/register')}>Sign Up</button>
                             </div>

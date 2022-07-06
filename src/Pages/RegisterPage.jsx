@@ -2,12 +2,11 @@ import React from "react";
 import joinimage from '../Images/join-img.png';
 import google from '../Images/google.png';
 import Axios from 'axios';
+import { API_URL } from '../helper.js'
 import { VscEyeClosed } from "react-icons/vsc";
 import { VscEye } from "react-icons/vsc";
 import background from '../Images/bg.jpg';
-
-
-const url = "http://localhost:2022"
+import { useToast } from '@chakra-ui/react'
 
 
 const RegisPage = (props) => {
@@ -23,7 +22,7 @@ const RegisPage = (props) => {
       }, []);
 
     const getData = () => {
-        Axios.get(url + '/users')
+        Axios.get(API_URL + '/users')
         .then((response) => {
             console.log(response.data);
             setDatabase(response.data);
@@ -32,21 +31,6 @@ const RegisPage = (props) => {
             console.log(error);
         })
     }
-
-    const handleUsername = (e) => {
-        console.log(e.target.value);
-        setUsername(e.target.value);
-    };
-
-    const handleEmail = (e) => {
-        console.log(e.target.value);
-        setEmail(e.target.value);
-    };
-
-    const handlePassword = (e) => {
-        console.log(e.target.value);
-        setPassword(e.target.value);
-    };
 
     const resetInputField = () => {
         setUsername("");
@@ -64,6 +48,8 @@ const RegisPage = (props) => {
         console.log(passwordType);
     }
 
+    const toast = useToast();
+
     const btnSubmit = () => {
         let input = {
             id: arrayLength + 1,
@@ -74,20 +60,30 @@ const RegisPage = (props) => {
             password: password
         };
 
-        Axios.post(url + '/users', input)
+        Axios.post(API_URL + '/users', input)
         .then((response) => {
             console.log(response.data);
-            getData();
+            if(response.data.id){
+                getData();
+                toast({
+                    title: "Account Created",
+                    description: `Welcome to E-SHOP ${response.data.username}`,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true
+                });
+            }
         }).catch((error) => {
             console.log(error);
         })
     }
 
+
     return (
-    <div style={{backgroundImage: `url(${background})`}}>
+    <div style={{backgroundImage: `url(${background})`, backgroundPosition: "center", backgroundSize: "cover"}}>
         <div className="container">
             <div className="d-flex justify-content-center align-items-center"> 
-                <div className="mt-5 p-5 d-flex justify-content-center">
+                <div className="mt-5 py-5 p-md-5 d-flex justify-content-center">
                     <div className="shadow border rounded-3 d-flex flex-column bg-white p-2">
                         <div className="p-2 d-flex flex-column mb-2"> {/*banner*/}
                             <div className="d-flex align-items-center">
@@ -102,7 +98,7 @@ const RegisPage = (props) => {
                                 <span style={{color: "#a1a1a1"}}>A central hub where best furniture can be found.</span>
                             </div>
                         </div>
-                        <div className="d-flex p-2 justify-content-evenly row">
+                        <div className="p-2 row">
                             <div className="w-lg-50 d-flex align-items-center d-none d-lg-block col-lg-6"> {/*left image*/}
                                 <img src={joinimage} className="img-fluid"/>
                             </div>
@@ -113,24 +109,30 @@ const RegisPage = (props) => {
                                     <span className="fw-bold" style={{color: "#a1a1a1"}}>Already a member? <a className="text-decoration-none" href="#">Log in</a></span>
                                     </div>
                                 <div className="w-100 p-1 ms-2"> {/*right sign up input*/}
-                                    <div className="my-2">
-                                        <span className="fw-bold fs-6 ms-2" style={{color: "#545454"}}>Username</span><br/>
-                                        <input className="border rounded-1 p-3 d-flex align-items-center" style={{width: "90%"}} 
-                                        placeholder="example01" onChange={handleUsername} value={username}></input>
+                                    <div className="mb-2 d-flex flex-column">
+                                        <label className="form-label fw-bold fs-6" style={{color: "#545454"}}>Username</label>
+                                        <input type="text" className="border fs-6 form-control-lg"
+                                            style={{width: "90%"}} 
+                                            placeholder="example01" onChange={(e) => setUsername(e.target.value)} value={username}>
+                                        </input>
                                     </div>
-                                    <div className="my-2">
-                                        <span className="fw-bold fs-6 ms-2" style={{color: "#545454"}}>E-Mail</span><br/>
-                                        <input className="border rounded-1 p-3 d-flex align-items-center" style={{width: "90%"}} 
-                                        placeholder="name@example.com" onChange={handleEmail} value={email}></input>
+                                    <div className="mb-2 d-flex flex-column">
+                                        <label className="form-label fw-bold fs-6" style={{color: "#545454"}}>Email</label>
+                                        <input type="email" className="border fs-6 form-control-lg"
+                                            style={{width: "90%"}} 
+                                            placeholder="name@example.com" onChange={(e) => setEmail(e.target.value)} value={email}>
+                                        </input>
                                     </div>
-                                    <div className="my-2">
-                                        <span className="fw-bold fs-6 ms-2" style={{color: "#545454"}}>Password</span><br/>
-                                        <div className="d-flex align-items-center" style={{width: "90%"}}>
-                                            <input className="border rounded-start d-flex align-items-center px-2 py-3" style={{width: "85%"}} 
-                                            placeholder="max. 8 character" onChange={handlePassword} value={password}
-                                            type={passwordType}></input>
-                                            <div style={{width: "15%", height: "58px"}} className="d-flex align-items-center justify-content-center">
-                                                <button className="border rounded-end w-100 h-100" onClick={togglePassword}>
+                                    <div className="mb-2 d-flex flex-column">
+                                        <label className="form-label fw-bold fs-6" style={{color: "#545454"}}>Password</label>
+                                        <div className="d-flex align-items-center border rounded" style={{width: "90%"}}>
+                                            <input type={passwordType} className="col-10 border-0 fs-6 form-control-lg" 
+                                                // style={{width: "85%"}} 
+                                                placeholder="8 - 20 characters" onChange={(e) => setPassword(e.target.value)} value={password}>
+                                            </input>
+                                            <div style={{height: "50px"}} className="col-2 d-flex align-items-center justify-content-center">
+                                                <button className="border-0 bg-transparent w-100 h-100" 
+                                                    onClick={togglePassword}>
                                                     {passwordType === "password" ? <VscEyeClosed className="image-fluid w-75 h-50"/> :
                                                     <VscEye className="image-fluid w-75 h-50"/>}
                                                 </button>
