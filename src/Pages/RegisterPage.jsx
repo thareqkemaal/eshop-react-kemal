@@ -78,7 +78,6 @@ const RegisPage = (props) => {
         })
     }
 
-
     return (
     <div style={{backgroundImage: `url(${background})`, backgroundPosition: "center", backgroundSize: "cover"}}>
         <div className="container">
