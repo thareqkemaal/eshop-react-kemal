@@ -25,7 +25,13 @@ const NavbarComponent = (props) => {
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li>
                                 <span className="nav-link text-light" 
-                                onClick={()=>navigate('/product/admin')}>
+                                onClick={()=>navigate('/products/admin')}>
+                                    Admin
+                                </span>
+                            </li>
+                            <li>
+                                <span className="nav-link text-light" 
+                                onClick={()=>navigate('/products')}>
                                     Product
                                 </span>
                             </li>

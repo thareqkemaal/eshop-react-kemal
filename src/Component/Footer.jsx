@@ -13,23 +13,27 @@ const FooterComponent = (props) => {
                 <div className="col-12 col-sm-3 fs-5">
                     <span className="fw-bold" style={{color: "#0b5fda"}}>E-SHOP</span> | Furniture
                 </div>
-                <div className="d-none d-sm-block col-sm-3">
-                    <Text className="fw-bold">Products</Text>
-                    <Text>Livingroom</Text>
-                    <Text>Bedroom</Text>
-                    <Text>Kitchen</Text>
+                <div className="d-none d-sm-flex col-sm-3 justify-content-center">
+                    <div className="d-flex flex-column text-start">
+                        <span className="fw-bold">Products</span>
+                        <span>Bedroom</span>
+                        <span>Livingroom</span>
+                        <span>Kitchen</span>
+                    </div>
                 </div>
-                <div className="d-none d-sm-block col-sm-3">
-                    <Text className="fw-bold">Company</Text>
-                    <Text>About Us</Text>
-                    <Text>Career</Text>
+                <div className="d-none d-sm-flex col-sm-3 justify-content-center">
+                    <div className="d-flex flex-column text-start">
+                        <span className="fw-bold">Company</span>
+                        <span>About Us</span>
+                        <span>Career</span>
+                    </div>
                 </div>
                 <div className="d-none d-sm-block col-sm-3">
                     <Text className="fw-bold">Follow Us</Text>
-                    <div className="d-flex justify-content-evenly" style={{height: "30%"}}>
-                    <FaFacebook className="h-auto w-auto"/>
-                    <FaInstagram className="h-auto w-auto"/>
-                    <FaTwitter className="h-auto w-auto"/>
+                    <div className="d-flex justify-content-center" style={{height: "30%"}}>
+                    <FaFacebook className="h-auto w-auto" style={{color: "#0b5fda"}}/>
+                    <FaInstagram className="mx-2 h-auto w-auto" style={{color: "#0b5fda"}}/>
+                    <FaTwitter className="h-auto w-auto" style={{color: "#0b5fda"}}/>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import NavbarComponent from './Component/Navbar';
 import ProductPage from './Pages/ProductPage';
 import FooterComponent from './Component/Footer';
+import UserDisplayProduct from './Pages/UserDisplayProduct';
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
         <Routes>
           <Route path='/' element={<LandingPage/>}/>
           <Route path='/register' element={<RegisPage/>}/>
-          <Route path='/product/admin' element={<ProductPage/>}/>
+          <Route path='/products/admin' element={<ProductPage/>}/>
+          <Route path='/products' element={<UserDisplayProduct/>}/>
         </Routes>
         <FooterComponent/>
       </div>
