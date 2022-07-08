@@ -134,7 +134,7 @@ const LandingPage = (props) => {
                 </div> */}
         </div>
         <div className="article">   
-        <div classNames="container-fluid">
+        <div className="container-fluid">
             <div className="row m-5 d-flex align-items-center">
                 <div className="col-12 col-md-6">
                     <p className="fs-2 fw-bold text-decoration-underline">FRIHETEN</p>

@@ -2,7 +2,7 @@ import React from "react";
 import { ModalFocusScope, Select, Text, Textarea } from '@chakra-ui/react';
 import Axios from 'axios';
 import { API_URL } from '../helper.js';
-import NavbarBlackComponent from '../Component/NavbarBlack';
+
 import {
     Modal,
     ModalOverlay,
@@ -117,7 +117,6 @@ const UserDisplayProduct = (props) => {
     
 
 return (
-<NavbarBlackComponent>
     <div className="container py-5">
         {/*HEADER*/}
         <div className="row">
@@ -173,8 +172,6 @@ return (
             </div>
         </div>
     </div>
-
-    </NavbarBlackComponent>
     )
 };
 

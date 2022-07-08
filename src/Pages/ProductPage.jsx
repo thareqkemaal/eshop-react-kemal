@@ -2,7 +2,6 @@ import React from "react";
 import { ModalFocusScope, Select, Text, Textarea } from '@chakra-ui/react';
 import Axios from 'axios';
 import { API_URL } from '../helper.js';
-import NavbarBlackComponent from '../Component/NavbarBlack';
 import {
     Modal,
     ModalOverlay,
@@ -180,7 +179,6 @@ const ProductPage = (props) => {
     }
 
     return (
-    <NavbarBlackComponent>
     <div className="container-fluid container-lg py-5">
         {/*HEADER*/}
         <div className="row">
@@ -314,8 +312,7 @@ const ProductPage = (props) => {
             </table>
         
         </div>
-    </div> 
-    </NavbarBlackComponent>
+    </div>
     )
 };
 

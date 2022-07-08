@@ -1,11 +1,11 @@
 import React from "react";
-import joinimage from '../Images/join-img.png';
-import google from '../Images/google.png';
 import Axios from 'axios';
 import { API_URL } from '../helper.js'
+import background from '../Images/bg.jpg';
+import joinimage from '../Images/join-img.png';
+import google from '../Images/google.png';
 import { VscEyeClosed } from "react-icons/vsc";
 import { VscEye } from "react-icons/vsc";
-import background from '../Images/bg.jpg';
 import { useToast } from '@chakra-ui/react'
 
 
