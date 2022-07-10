@@ -7,7 +7,7 @@ const INITIAL_STATE = { // mirip react this.State
 };
 
 export const userReducer = (state = INITIAL_STATE, action) => {
-    console.log("Data Action", action)
+    // console.log("Data Action", action)
     switch (action.type) {
         case "LOGIN_SUCCESS":
             return {...state, ...action.payload};

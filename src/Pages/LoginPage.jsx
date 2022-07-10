@@ -29,7 +29,7 @@ const LoginPage = (props) => {
     const btnLogin = () => {
         Axios.get(API_URL + `/users?email=${email}&password=${password}`)
         .then((response) => {
-            console.log(response.data);
+            // console.log(response.data);
             localStorage.setItem("eshopLog", response.data[0].id); 
             dispatch(loginAction(response.data[0])); // untuk menyimpan data ke global
             navigate('/', {replace: true}); // untuk pindah ke landing page dan tidak bisa kembali ke sign in

@@ -1,32 +1,12 @@
 import React from "react";
-import { ModalFocusScope, Select, Text, Textarea } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
 import Axios from 'axios';
 import { API_URL } from '../helper.js';
-
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    useDisclosure,
-  } from '@chakra-ui/react';
-  import {
-    Image,
-    Top,
-    Input,
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
-  } from '@chakra-ui/react';
-  import { BsFillPlusCircleFill } from "react-icons/bs";
-  import { BsPencilSquare } from "react-icons/bs";
-  import { BsFillTrashFill } from "react-icons/bs";
-  import { Button, ButtonGroup } from '@chakra-ui/react'
-  import { useToast } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { prodDetailClicked } from '../actions/productAction';
+import { ProductDetail } from './ProductDetail';
 
 const UserDisplayProduct = (props) => {
     const [database, setDatabase] = React.useState([]);
@@ -38,6 +18,9 @@ const UserDisplayProduct = (props) => {
     const [filterName, setFilterName] = React.useState("");
     const [minPrice, setMinPrice] = React.useState(0);
     const [maxPrice, setMaxPrice] = React.useState(0);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     React.useEffect(() => {
         getData();
@@ -52,10 +35,21 @@ const UserDisplayProduct = (props) => {
         })
     };
 
+    const navProdDetail = (value) => {
+        Axios.get(API_URL + `/products?id=${value}`)
+        .then((response) => {
+            console.log(response.data)
+            navigate(`/products/${response.data[0].id}`); // ini ke website produk detail
+        }).catch((error) => {
+            console.log(error)
+        })
+        
+    }
+
     const printCard = () => {
         return database.map((val, idx) => {
             return (
-            <div key={val.id} className="card col-12 col-sm-6 col-lg-4 p-2 mb-5 border-0">
+            <div key={val.id} className="card col-12 col-sm-6 col-lg-4 p-2 mb-5 border-0" onClick={() => navProdDetail(val.id)}>
                 <div className="d-flex align-items-center justify-content-center">
                     <img src={val.image}/>
                 </div>
@@ -128,6 +122,12 @@ return (
                     </span>
                 </div>
             </div>
+        </div>
+        <div aria-label="breadcrumb">
+            <ol className="breadcrumb">
+                <li className="breadcrumb-item"><a href="#" onClick={() => navigate("/")}>Home</a></li>
+                <li className="breadcrumb-item active" aria-current="page">Products</li>
+            </ol>
         </div>
         <div className="row mt-3">
             {/*FILTER*/}

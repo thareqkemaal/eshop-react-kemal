@@ -24,6 +24,8 @@ import {
 } from "@chakra-ui/react";
 
 const NavbarComponent = (props) => {
+
+  const { pathname } = window.location
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { username, status, role } = useSelector((state) => { // const { username, status, role } = global;
@@ -43,12 +45,12 @@ const NavbarComponent = (props) => {
         }, 1000)
   }, []);
    
-  console.log("cek use selector NAVBAR", global);
+  // console.log("cek use selector NAVBAR", global);
 
   const btnLogout = () => {
     Axios.get(API_URL + `/users?username=${username}&status=${status}`)
       .then((response) => {
-        console.log("btn logout", response.data);
+        // console.log("btn logout", response.data);
         localStorage.removeItem("eshopLog");
         dispatch(logoutAction());
         navigate("/", { replace: true });
@@ -62,11 +64,14 @@ const NavbarComponent = (props) => {
 
   return (
     <div style={{ position: "absolute", zIndex: "2", width: "100%" }}>
-      <div className="navbar navbar-expand-lg navbar-light bg-transparent">
+      <div className={`navbar navbar-expand-lg  ${pathname != "/" || pathname != "/register" || 
+        pathname != "/login" ?
+      "navbar-light bg-transparent" : "navbar-dark bg-transparent"}`}>
         <div className="container">
-          <span className="navbar-brand" onClick={() => navigate("/")}>
-            <span className="fw-bold text-light">E-SHOP</span>
-            <span className="lead ms-1 text-light">| Furniture</span>
+          <span className={`navbar-brand ${pathname == "/" || pathname == "/register" || 
+            pathname == "/login" ? "text-white" : "text-black"}`} onClick={() => navigate("/")}>
+            <span className="fw-bold">E-SHOP</span>
+            <span className="lead ms-1">| Furniture</span>
           </span>
           <button
             className="navbar-toggler"
@@ -82,7 +87,8 @@ const NavbarComponent = (props) => {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li>
                 <span
-                  className="nav-link text-light"
+                  className={`nav-link ${pathname == "/" || pathname == "/register" || 
+                    pathname == "/login" ? "text-white" : "text-black"}`}
                   onClick={() => navigate("/products")}
                 >
                   Product
@@ -100,7 +106,8 @@ const NavbarComponent = (props) => {
                       {role === "Admin" ? (
                         <div>
                           <div className="d-flex align-items-center">
-                            <Text className="text-white me-3" fontStyle="italic">
+                            <Text className={`me-3 ${pathname == "/" || pathname == "/register" || 
+                                pathname == "/login" ? "text-white" : "text-black"}`} fontStyle="italic">
                               {status}
                             </Text>
                             <Menu>
@@ -119,18 +126,18 @@ const NavbarComponent = (props) => {
                                   <MenuItem>Transaction Management</MenuItem>
                                 </div>
                                 <div className="d-flex align-items-center">
-                                  <div>
                                     <MenuItem
                                       type="button"
                                       onClick={btnLogout}
                                       className="fw-bold"
                                     >
-                                      Log Out
-                                    </MenuItem>
+                                  <div>
+                                      Log Out 
                                   </div>
                                   <div>
                                     <AiOutlinePoweroff />
                                   </div>
+                                    </MenuItem>
                                 </div>
                               </MenuList>
                             </Menu>
@@ -180,7 +187,8 @@ const NavbarComponent = (props) => {
               ) : (
                 <div className="btn-group">
                   <button
-                    className="btn btn-outline-light"
+                    className={`${pathname == "/" || pathname == "/register" || 
+                       pathname == "/login" ? "btn btn-outline-light" : "btn btn-outline-primary" }`}
                     onClick={() => navigate("/login")}
                   >
                     Sign In

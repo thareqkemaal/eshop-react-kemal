@@ -7,6 +7,7 @@ import google from '../Images/google.png';
 import { VscEyeClosed } from "react-icons/vsc";
 import { VscEye } from "react-icons/vsc";
 import { useToast } from '@chakra-ui/react'
+import { useNavigate } from "react-router-dom";
 
 
 const RegisPage = (props) => {
@@ -16,6 +17,8 @@ const RegisPage = (props) => {
     const [password, setPassword] = React.useState("");
     const [arrayLength, setLength] = React.useState(0);
     const [passwordType, setPasswordType] = React.useState("password");
+
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         getData();
@@ -72,6 +75,7 @@ const RegisPage = (props) => {
                     duration: 5000,
                     isClosable: true
                 });
+                navigate("/", {replace: true});
             }
         }).catch((error) => {
             console.log(error);

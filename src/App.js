@@ -12,6 +12,7 @@ import Axios from 'axios';
 import { API_URL } from './helper';
 import { useDispatch } from 'react-redux';
 import { loginAction } from './actions/userAction';
+import ProductDetail from './Pages/ProductDetail';
 
 function App() {
   const dispatchEvent = useDispatch();
@@ -46,6 +47,7 @@ function App() {
           <Route path='/products/admin' element={<ProductPage/>}/>
           <Route path='/products' element={<UserDisplayProduct/>}/>
           <Route path='/login' element={<LoginPage/>}/>
+          <Route path='/products/:id' element={<ProductDetail/>}/>
         </Routes>
         <FooterComponent/>
       </div>
