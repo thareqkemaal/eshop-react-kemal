@@ -1,14 +1,24 @@
 import Axios from "axios";
 import React from "react";
-import { Route, useParams, useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { API_URL } from "../helper";
 import { Text, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { bindActionCreators } from "redux";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useToast } from '@chakra-ui/react'
+import { updateCartAction } from '../actions/userAction';
+{/**cara 1 pake state => import { useLocation } from 'react-router-dom' */}
 
 
 const ProductDetail = (props) => {
+
+    {/** cara 1 pakai state 
+    const { state } = useLocation();
+
+    nanti tinggal dipanggil seperti ini:
+
+    {state.name} dsb*/}
+
     const [product, setProduct] = React.useState({
         id: 0,
         name: "",
@@ -19,17 +29,25 @@ const ProductDetail = (props) => {
         price: 0,
         image: ""
     });
-
+    // data product
+    const { id } = useParams();
+    const { name, description, brand, category, stock, price, image } = product;
+    
+    // data user
+    const { cart, userId } = useSelector(({userReducer}) => {
+        return {
+            cart: userReducer.cart,
+            userId: userReducer.id
+        }
+    });
+    
     const [note, setNote] = React.useState("");
     const [counter, setCounter] = React.useState(0);
     const [subTotal, setSubtotal] = React.useState(0);
     
-    const { id } = useParams();
-
-    const { name, description, brand, category, stock, price, image } = product;
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const toast = useToast();
     
     React.useEffect(() => {
         product_detail()
@@ -39,51 +57,77 @@ const ProductDetail = (props) => {
         Axios.get(API_URL + `/products?id=${id}`)
         .then((response) => {
             setProduct(response.data[0]);
+            setSubtotal(response.data[0].price);
+            setCounter(1)
         }).catch((error) => {
             console.log(error)
         })
     };
 
     const btnInc = () => {
-        if (stock > 0) {
+        if (counter < stock) {
             let count = counter + 1;
             setCounter(count);
-            let remain = parseInt(stock - 1);
-            setProduct({...product, stock: remain});
             let sub = count * price;
             setSubtotal(sub);
-
-        } else if (stock == 0){
-            alert("Run of Out Stock")
         }
     };
 
     const btnDec = () => {
-        if (counter != 0){
+        if (counter > 1){
             let count = counter - 1;
             setCounter(count);
-            let remain = stock + 1;
-            setProduct({...product, stock: remain});
             let sub = count * price;
             setSubtotal(sub);
         };
         
     };
 
-    const updateStock = () => {
-        let account = localStorage.getItem("eshopLog");
+    const btnCart = () => { 
+        //ALGORITMA
+        let temp = [...cart];
+        // 1. memeriksa apakah produk sudah ada di dalam keranjang
+        let index = temp.findIndex(val => val.idProduct == id)
         
-        Axios.patch(API_URL + "/products/" + id, {stock: stock})
-        .then((response) => {
-            console.log("success update");
-            setCounter(0);
-        }).catch((error) => {
-            console.log(error);
-        });
-    };
+        if (index >= 0){
+            let add = temp[index].quantity + counter;
+            
+            temp.splice(index, 1, {
+                idProduct: id,
+                images: image,
+                name: name,
+                brand: brand,
+                category: category,
+                price: price,
+                quantity: add
+            })
 
-    const btnCart = () => {
+        } else {
+            // 2. menambahkan data produk ke dalam data keranjang sebelumnya
+            temp.push({
+                idProduct: id,
+                images: image,
+                name: name,
+                brand: brand,
+                category: category,
+                price: price,
+                quantity: counter
+            });
+        }
+        // 3. melakukan update data ke db.json
+        Axios.patch(API_URL + `/users/${userId}`, {cart: temp})
+        .then((res) => {
+            console.log(res.data)
+            // 4. melakukan update data ke reducer
+                // buat case baru di userreducer lalu buat function baru di useraction
+            dispatch(updateCartAction(res.data.cart))
+            // 5. redirect ke cart page
+        }).catch((err) => {
+            console.log(err)
+        });
         
+        navigate('/cart')
+
     };
     
     return (
@@ -167,7 +211,7 @@ const ProductDetail = (props) => {
                     </div>
                     {/*ADD TO CART BUTTON*/}
                     <div className="mt-3">
-                        <Button type="button" className="fw-bold" colorScheme="green" onClick={() => {updateStock(); btnCart()}}>+ Add to Cart</Button>
+                        <Button type="button" className="fw-bold" colorScheme="green" onClick={() => btnCart()}>+ Add to Cart</Button>
                     </div>
                 </div>
             </div>

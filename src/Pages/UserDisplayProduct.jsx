@@ -4,14 +4,10 @@ import Axios from 'axios';
 import { API_URL } from '../helper.js';
 import { Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { prodDetailClicked } from '../actions/productAction';
-import { ProductDetail } from './ProductDetail';
 
 const UserDisplayProduct = (props) => {
     const [database, setDatabase] = React.useState([]);
     const [filterData, setFilterData] = React.useState({
-        // name: "",
         brand: "",
         category: "",
     });
@@ -20,7 +16,6 @@ const UserDisplayProduct = (props) => {
     const [maxPrice, setMaxPrice] = React.useState(0);
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     React.useEffect(() => {
         getData();
@@ -35,21 +30,11 @@ const UserDisplayProduct = (props) => {
         })
     };
 
-    const navProdDetail = (value) => {
-        Axios.get(API_URL + `/products?id=${value}`)
-        .then((response) => {
-            console.log(response.data)
-            navigate(`/products/${response.data[0].id}`); // ini ke website produk detail
-        }).catch((error) => {
-            console.log(error)
-        })
-        
-    }
-
     const printCard = () => {
         return database.map((val, idx) => {
             return (
-            <div key={val.id} className="card col-12 col-sm-6 col-lg-4 p-2 mb-5 border-0" onClick={() => navProdDetail(val.id)}>
+            <div key={val.id} className="card col-12 col-sm-6 col-lg-4 p-2 mb-5 border-0" onClick={() => navigate(`/products/detail/${val.id}`)}> 
+            {/** cara 1 di onClick bisa pake navigate("products/detail", {state: val}) */}
                 <div className="d-flex align-items-center justify-content-center">
                     <img src={val.image}/>
                 </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { ModalFocusScope, Select, Text, Textarea } from '@chakra-ui/react';
+import { Select, Text, Textarea } from '@chakra-ui/react';
 import Axios from 'axios';
 import { API_URL } from '../helper.js';
 import {
@@ -14,12 +14,9 @@ import {
   } from '@chakra-ui/react';
   import {
     Image,
-    Top,
     Input,
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
   } from '@chakra-ui/react';
   import { BsFillPlusCircleFill } from "react-icons/bs";
   import { BsPencilSquare } from "react-icons/bs";
@@ -49,8 +46,6 @@ const ProductPage = (props) => {
     const [filterName, setFilterName] = React.useState("");
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [size, setSize] = React.useState('md');
-    const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'full'];
     const toast = useToast(); 
 
     React.useEffect(() => {
@@ -123,7 +118,7 @@ const ProductPage = (props) => {
                     <tbody key={val.id}>
                         <tr className="row m-0 py-1">
                             <td className="d-none d-sm-block col-sm-1 d-sm-flex align-items-center justify-content-center fw-bold">{idx + 1}</td>
-                            <td className="col-sm-2"><img src={val.image}/></td>
+                            <td className="col-sm-2"><img src={val.image} alt="this is it"/></td>
                             <td className="col-sm-2 d-flex align-items-center justify-content-center fw-bold">{val.name.toUpperCase()}</td>
                             <td className="col-sm-1 d-flex align-items-center justify-content-center">{val.brand.toUpperCase()}</td>
                             <td className="col-sm-2 d-flex align-items-center justify-content-center" style={{textTransform: "capitalize"}}>{val.category}</td>

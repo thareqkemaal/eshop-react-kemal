@@ -10,12 +10,25 @@ import UserDisplayProduct from './Pages/UserDisplayProduct';
 import LoginPage from './Pages/LoginPage';
 import Axios from 'axios';
 import { API_URL } from './helper';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from './actions/userAction';
 import ProductDetail from './Pages/ProductDetail';
+import UserCart from './Pages/UserCart';
+import NotFoundPage from './Pages/NotFoundPage';
+import Checkout from './Pages/CheckoutPage';
+import Invoice from './Pages/InvoicePage';
 
 function App() {
   const dispatchEvent = useDispatch();
+
+  const [loading, setLoading] = React.useState(true);
+
+  const { name, role } = useSelector(({ userReducer }) => {
+    return {
+      name: userReducer.name,
+      role: userReducer.role
+    }
+  })
 
   const keepLogin = () => {
     let eshopLog = localStorage.getItem("eshopLog")
@@ -24,11 +37,14 @@ function App() {
       .then((response) => {
         if (response.data.length > 0){
           localStorage.setItem("eshopLog", response.data[0].id);
+          setLoading(false);
           dispatchEvent(loginAction(response.data[0]));
         }
       }).catch((error) => {
         console.log(error);
       })
+    } else {
+      setLoading(false);
     }
   };
 
@@ -40,14 +56,41 @@ function App() {
   return (
     <div>
       <div>
-        <NavbarComponent/>
+        <NavbarComponent loading={loading}/>
         <Routes>
           <Route path='/' element={<LandingPage/>}/>
-          <Route path='/register' element={<RegisPage/>}/>
-          <Route path='/products/admin' element={<ProductPage/>}/>
-          <Route path='/products' element={<UserDisplayProduct/>}/>
-          <Route path='/login' element={<LoginPage/>}/>
-          <Route path='/products/:id' element={<ProductDetail/>}/>
+          {
+            role ? 
+            null :
+            <>
+            <Route path='/register' element={<RegisPage/>}/>
+            <Route path='/login' element={<LoginPage/>}/>
+            </>
+          }
+          {/* 
+          {
+            role == "Admin" &&
+            <>
+              <Route path='/products/admin' element={<ProductPage/>}/>
+            </>
+          }
+          disebut single ternary
+          */}
+          {
+            role == "Admin" ?
+              <>
+                <Route path='/products/admin' element={<ProductPage/>}/>
+              </>
+              :
+              <>
+                <Route path='/products' element={<UserDisplayProduct/>}/>
+                <Route path='/products/detail/:id' element={<ProductDetail/>}/>
+                <Route path='/cart' element={<UserCart/>}/>
+                <Route path='/checkout' element={<Checkout/>}/>
+                <Route path='/invoice' element={<Invoice/>}/>
+              </>
+          }
+          <Route path='*' element={<NotFoundPage/>}/>
         </Routes>
         <FooterComponent/>
       </div>
