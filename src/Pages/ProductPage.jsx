@@ -117,7 +117,7 @@ const ProductPage = (props) => {
                 <tbody key={val.idproducts}>
                     <tr className="row m-0 py-1">
                         <td className="d-none d-sm-block col-sm-1 d-sm-flex align-items-center justify-content-center fw-bold">{idx + 1}</td>
-                        <td className="col-sm-2"><img src={API_URL + val.images} alt="this is it" /></td>
+                        <td className="col-sm-2"><img src={val.images.includes('https') ? val.images : API_URL + val.images} alt="this is it" /></td>
                         <td className="col-sm-2 d-flex align-items-center justify-content-center fw-bold">{val.name.toUpperCase()}</td>
                         <td className="col-sm-1 d-flex align-items-center justify-content-center">{val.brand.toUpperCase()}</td>
                         <td className="col-sm-2 d-flex align-items-center justify-content-center" style={{ textTransform: "capitalize" }}>{val.category}</td>
