@@ -9,11 +9,15 @@ const INITIAL_STATE = { // mirip react this.State
     inputCash: 0,
     change: 0,
     date: "",
-    datems: 0
+    datems: 0,
+    status: "",
+    invCode: "",
+    firstName: "",
+    firstImage: ""
 };
 
 export const productReducer = (state = INITIAL_STATE, action) => {
-    // console.log("ini payload address", action.payload)
+    // console.log("ini payload productreducer", action.payload)
     switch (action.type) {
         case "CHECKOUT_SUCCESS": // menghapus data password dari payload
             return {...state, ...action.payload};

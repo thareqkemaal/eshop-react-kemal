@@ -22,8 +22,9 @@ const UserDisplayProduct = (props) => {
       }, []);
 
       const getData = () => {
-        Axios.get(API_URL + "/products")
+        Axios.get(API_URL + "/product")
         .then((response) => {
+            console.log(response.data)
             setDatabase(response.data);
         }).catch((error) => {
             console.log(error);
@@ -33,10 +34,10 @@ const UserDisplayProduct = (props) => {
     const printCard = () => {
         return database.map((val, idx) => {
             return (
-            <div key={val.id} className="card col-12 col-sm-6 col-lg-4 p-2 mb-5 border-0" onClick={() => navigate(`/products/detail/${val.id}`)}> 
+            <div key={val.idproducts} className="card col-12 col-sm-6 col-lg-4 p-2 mb-5 border-0" onClick={() => navigate(`/products/detail/${val.id}`)}> 
             {/** cara 1 di onClick bisa pake navigate("products/detail", {state: val}) */}
                 <div className="d-flex align-items-center justify-content-center">
-                    <img src={val.image}/>
+                    <img src={API_URL + val.images}/>
                 </div>
                 <div className="d-flex align-items-center justify-content-center">
                     <span className="border-0 rounded-3 bg-primary text-white" style={{position: "absolute"}}>

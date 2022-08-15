@@ -12,6 +12,28 @@ const UserCart = (props) => {
     const [databaseProd, setDatabaseProd] = React.useState([])
     const [totalCart, setTotalCart] = React.useState(0);
     const [shipping, setShipping] = React.useState(0);
+    const [shippingCharge, setShippingCharge] = React.useState([
+        {
+            id: 1,
+            type: 'Reguler',
+            pay: 0.05
+        },
+        {
+            id: 2,
+            type: 'Next Day',
+            pay: 0.15
+        },
+        {
+            id: 3,
+            type: 'Same Day',
+            pay: 0.25
+        }
+    ]);
+
+    const printShipping = () => {
+        return shippingCharge.map((val, idx) => <option value={(totalCart * val.pay)} key={val.id}>{val.type} - Rp. {(totalCart * val.pay).toLocaleString()}</option>)
+    ;}
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -29,7 +51,7 @@ const UserCart = (props) => {
     const getProdData = () => {
         Axios.get(API_URL + "/products")
         .then((res)=>{
-            console.log(res.data);
+            // console.log(res.data);
             setDatabaseProd(res.data);
         }).catch((err) => {
             console.log(err)
@@ -41,7 +63,7 @@ const UserCart = (props) => {
         Axios.get(API_URL + `/users/${onUser}`)
         .then((res) => {
             setDataCart(res.data.cart);
-            
+
             let total = 0;
             res.data.cart.forEach((val, idx) => {
                 total += (val.price * val.quantity);
@@ -69,63 +91,89 @@ const UserCart = (props) => {
         
     };
 
-    const btnInc = (value) => {
-        let userId = localStorage.getItem("eshopLog");
-        let temp = [...dataCart];
-        let index = temp.findIndex(val => val.idProduct == value);
-        let findStock = databaseProd.findIndex(val => val.id == value);
-        
-        if (temp[index].quantity >= 1 && temp[index].quantity < databaseProd[findStock].stock){
-            temp[index].quantity += 1;
-        } else if (temp[index].quantity == databaseProd[findStock].stock){
-            alert("You Hit Maximum Available Stock");
-        }
+    const btnInc = async(value) => {
+        try {
+            let userId = localStorage.getItem("eshopLog");
+            //untuk ke json server
+            let temp = [...dataCart];
+            let index = temp.findIndex(val => val.idProduct == value);
+            let findStock = databaseProd.findIndex(val => val.id == value);
+            
+            // untuk ke user reducer
+            // let tempReducer = [...cartUserRed];
+            // let newTemp = {
+            //     ...tempReducer[index]
+            // };
+            // newTemp.quantity += 1
+            // temp.splice(index, 1, newTemp) // cara 1
+            // temp[index]=newTemp; // cara 2
 
-        Axios.patch(API_URL + `/users/${userId}`, {cart: temp})
-        .then((res) => {
-            // console.log("sesudah", res.data.cart[index].quantity)
+            if (temp[index].quantity >= 1 && temp[index].quantity < databaseProd[findStock].stock){
+                temp[index].quantity += 1;
+            } else if (temp[index].quantity == databaseProd[findStock].stock){
+                alert("You Hit Maximum Available Stock");
+            };
+
+            await Axios.patch(API_URL + `/users/${userId}`, {cart: temp});
+            dispatch(updateCartAction(dataCart));
             getData();
-        }).catch((err) => {
-            console.log(err)
-        });
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
-    const btnDec = (value) => {
-        let userId = localStorage.getItem("eshopLog");
-        let temp = [...dataCart];
-        let index = temp.findIndex(val => val.idProduct == value);
-
-        if(temp[index].quantity > 1){
-            temp[index].quantity -= 1;
-        };
-
-        Axios.patch(API_URL + `/users/${userId}`, {cart: temp})
-        .then((res) => {
-            // console.log("sesudah", res.data.cart[index].quantity)
+    const btnDec = async(value) => {
+        try {
+            let userId = localStorage.getItem("eshopLog");
+            let temp = [...dataCart];
+            let index = temp.findIndex(val => val.idProduct == value);
+    
+            if(temp[index].quantity > 1){
+                temp[index].quantity -= 1;
+            };
+    
+            await Axios.patch(API_URL + `/users/${userId}`, {cart: temp});
+            dispatch(updateCartAction(dataCart));
             getData();
-        }).catch((err) => {
-            console.log(err)
-        });
+
+        } catch (error) {
+            console.log(error)
+        };
     };
 
     const btnCheckout = () => {
         if (shipping != 0){
             let temp = [...dataCart];
             let shipment = parseInt(shipping);
-    
+            let userId = parseInt(localStorage.getItem("eshopLog"));
+            
+            const timestamp = new Date().getTime();
+            const date = new Date(timestamp);
             // console.log("ini payment", payment)
             let genRandomNum = Math.floor(100000 + Math.random() * 900000);
     
             let input = {
                 id: genRandomNum,
+                userId,
                 username: name,
                 totalCart,
                 shipment,
                 cart: temp,
+                status: "UNPAID",
+                invCode: `INV/${timestamp}/MPL/`,
+                date: date.toLocaleDateString("id"),
             };
-    
-            dispatch(checkoutAction(input))
-            navigate("/checkout")
+            
+            Axios.post(API_URL + "/checkoutHistory", input)
+            .then((res) => {
+                dispatch(checkoutAction(input));
+                let temp = [];
+                Axios.patch(API_URL + `/users/${userId}`, {cart: temp})
+                navigate("/usertransaction");
+            }).catch((err) => {
+                console.log(err);
+            })
         } else {
             alert("You Have Not Selected Shipping")
         }
@@ -216,8 +264,9 @@ const UserCart = (props) => {
                     <div className='my-2'>
                         <select className='p-2 border-2' onChange={(e) => setShipping(e.target.value)}>
                             <option value="0">Select Shipping</option>
-                            <option value="50000">Standard Delivery Rp. 50.000</option>
-                            <option value="250000">Fast Delivery Rp. 250.000</option>
+                            {
+                                printShipping()
+                            }
                         </select>
                     </div>
                     </div>

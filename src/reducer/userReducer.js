@@ -1,18 +1,20 @@
 const INITIAL_STATE = { // mirip react this.State
-    id: "",
+    iduser: null,
     username: "",
     email: "",
+    age: null,
+    city: "",
     role: "",
+    status_id: null,
     status: "",
-    cart: [],
-    invoice:[]
+    carts: [],
 };
 
 export const userReducer = (state = INITIAL_STATE, action) => {
-    console.log("Data Action", action)
+    console.log("Data Action userReducer", action)
     switch (action.type) {
         case "LOGIN_SUCCESS":
-            delete action.payload.password; // menghapus data password dari payload
+            // delete action.payload.password; // menghapus data password dari payload
             return {...state, ...action.payload};
         case "UPDATE_CART":
             return {...state, cart: action.payload};

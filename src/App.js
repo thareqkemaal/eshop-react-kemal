@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react';
 import LandingPage from './Pages/LandingPage';
 import RegisPage from './Pages/RegisterPage';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import NavbarComponent from './Component/Navbar';
 import ProductPage from './Pages/ProductPage';
 import FooterComponent from './Component/Footer';
@@ -17,15 +17,17 @@ import UserCart from './Pages/UserCart';
 import NotFoundPage from './Pages/NotFoundPage';
 import Checkout from './Pages/CheckoutPage';
 import Invoice from './Pages/InvoicePage';
+import UserTransactionPage from './Pages/UserTransactionPage';
+import VerifPage from './Pages/VerificationPage';
 
 function App() {
   const dispatchEvent = useDispatch();
 
   const [loading, setLoading] = React.useState(true);
 
-  const { name, role } = useSelector(({ userReducer }) => {
+  const { username, role } = useSelector(({ userReducer }) => {
     return {
-      name: userReducer.name,
+      username: userReducer.username,
       role: userReducer.role
     }
   })
@@ -33,12 +35,18 @@ function App() {
   const keepLogin = () => {
     let eshopLog = localStorage.getItem("eshopLog")
     if(eshopLog) {
-      Axios.get(API_URL + `/users?id=${eshopLog}`)
+      Axios.get(API_URL + `/auth/keep`, {
+        headers: {
+          'Authorization' : `Bearer ${eshopLog}`
+        }
+      })
       .then((response) => {
-        if (response.data.length > 0){
-          localStorage.setItem("eshopLog", response.data[0].id);
+        console.log(response.data);
+        if (response.data.token){
+          localStorage.setItem("eshopLog", response.data.token);
+          delete response.data.token;
           setLoading(false);
-          dispatchEvent(loginAction(response.data[0]));
+          dispatchEvent(loginAction(response.data));
         }
       }).catch((error) => {
         console.log(error);
@@ -59,6 +67,7 @@ function App() {
         <NavbarComponent loading={loading}/>
         <Routes>
           <Route path='/' element={<LandingPage/>}/>
+          <Route path='/verification/:token' element={<VerifPage/>}/>
           {
             role ? 
             null :
@@ -77,16 +86,18 @@ function App() {
           disebut single ternary
           */}
           {
-            role == "Admin" ?
+            role == "admin" ?
               <>
                 <Route path='/products/admin' element={<ProductPage/>}/>
+                <Route path='/products' element={<UserDisplayProduct/>}/>
               </>
               :
               <>
                 <Route path='/products' element={<UserDisplayProduct/>}/>
                 <Route path='/products/detail/:id' element={<ProductDetail/>}/>
                 <Route path='/cart' element={<UserCart/>}/>
-                <Route path='/checkout' element={<Checkout/>}/>
+                <Route path='/usertransaction' element={<UserTransactionPage/>}/>
+                {/* <Route path='/checkout' element={<Checkout/>}/> */}
                 <Route path='/invoice' element={<Invoice/>}/>
               </>
           }

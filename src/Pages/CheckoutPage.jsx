@@ -50,10 +50,11 @@ const Checkout = (props) => {
             } else {
                 let userId = localStorage.getItem("eshopLog");
                 let change = inputCash - (totalCart + shipment);
-                let temp = [...invoice]
                 const timestamp = new Date().getTime();
                 const date = new Date(timestamp);
 
+                let temp = [...invoice];
+                
                 let input = ({
                     userId: parseInt(userId),
                     id: parseInt(id),
@@ -68,7 +69,11 @@ const Checkout = (props) => {
                     datems: timestamp
                 });
 
-                temp.push(input)
+                if (temp.length > 0){
+                    temp.splice(0, 1);
+                } else {
+                    temp.push(input);
+                };
         
                 Axios.patch(API_URL + `/users/${userId}`, {invoice: temp})
                 .then((res) => {
@@ -85,15 +90,15 @@ const Checkout = (props) => {
                     {/*masih ada bug ketika sudah selesai transaksi, cart di navbar belum nol, baru bisa ketika di refresh */}
                     let temp = [];
                     Axios.patch(API_URL + `/users/${userId}`, {cart: temp})
+                    .then((res) => {
+                        console.log("cart empty");
+
+                        Axios.post(API_URL + `/checkoutHistory`, input)
                         .then((res) => {
-                            console.log("cart empty");
+                            console.log("added to checkout history");
                         }).catch((err) => {
                             console.log(err);
                         });
-
-                    Axios.post(API_URL + `/checkoutHistory`, input)
-                    .then((res) => {
-                        console.log("added to checkout history");
                     }).catch((err) => {
                         console.log(err);
                     });

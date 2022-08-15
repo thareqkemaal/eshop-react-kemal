@@ -4,6 +4,7 @@ import sofa from '../Images/sofa.jpg';
 import mejamakan from '../Images/mejamakan.jpg';
 import tempattidur from '../Images/tempattidur.jpg';
 
+
 const LandingPage = (props) => {
 
 return (

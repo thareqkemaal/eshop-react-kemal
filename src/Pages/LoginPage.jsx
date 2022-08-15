@@ -2,7 +2,7 @@ import React from "react";
 import Axios from "axios";
 import { API_URL } from '../helper.js';
 import { useNavigate } from 'react-router-dom';
-import { loginAction } from '../actions/userAction';
+import { loginAction, loginMiddleware } from '../actions/userAction';
 import { useDispatch } from 'react-redux';
 import { Text } from '@chakra-ui/react';
 import background from '../Images/bg.jpg';
@@ -26,16 +26,24 @@ const LoginPage = (props) => {
         console.log(passwordType);
     };
 
-    const btnLogin = () => {
-        Axios.get(API_URL + `/users?email=${email}&password=${password}`)
-        .then((response) => {
-            // console.log(response.data);
-            localStorage.setItem("eshopLog", response.data[0].id); 
-            dispatch(loginAction(response.data[0])); // untuk menyimpan data ke global
-            navigate('/', {replace: true}); // untuk pindah ke landing page dan tidak bisa kembali ke sign in
-        }).catch((error) => {
-            console.log(error);
-        })
+    const btnLogin = async () => {
+        let res = await dispatch(loginMiddleware(email, password));
+        if (res.success){
+            navigate('/', {replace: true})
+        }
+        // Axios.post(API_URL + `/auth/login`,{
+        //     email: email,
+        //     password: password
+        // })
+        // .then((response) => {
+        //     // console.log(response.data);
+        //     localStorage.setItem("eshopLog", response.data.token);
+        //     delete response.data.token;
+        //     dispatch(loginAction(response.data)); // untuk menyimpan data ke global
+        //     navigate('/', {replace: true}); // untuk pindah ke landing page dan tidak bisa kembali ke sign in
+        // }).catch((error) => {
+        //     console.log(error);
+        // })
     }
 
     return (

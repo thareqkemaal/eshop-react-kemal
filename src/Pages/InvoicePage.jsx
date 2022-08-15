@@ -101,7 +101,6 @@ const Invoice = (props) => {
                             <span className="fw-bold">Rp. {(val.shipment + val.totalCart).toLocaleString("id")}</span><br/>
                             <span className="fw-bold">Rp. {val.inputCash.toLocaleString("id")}</span><br/>
                             <span>Rp. {val.change.toLocaleString("id")}</span>
-
                         </div>
                     </div>
                 </div>

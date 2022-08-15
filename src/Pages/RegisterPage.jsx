@@ -25,7 +25,7 @@ const RegisPage = (props) => {
       }, []);
 
     const getData = () => {
-        Axios.get(API_URL + '/users')
+        Axios.get(API_URL + '/auth')
         .then((response) => {
             console.log(response.data);
             setDatabase(response.data);
@@ -55,18 +55,15 @@ const RegisPage = (props) => {
 
     const btnSubmit = () => {
         let input = {
-            id: arrayLength + 1,
             username: username,
             email: email,
-            role: "User",
-            status: "Unverified",
             password: password
         };
 
-        Axios.post(API_URL + '/users', input)
+        Axios.post(API_URL + '/auth/regis', input)
         .then((response) => {
             console.log(response.data);
-            if(response.data.id){
+            if(response.data.success){
                 getData();
                 toast({
                     title: "Account Created",
@@ -147,10 +144,11 @@ const RegisPage = (props) => {
                                         onClick={() => {btnSubmit(); resetInputField()}}
                                         type="button"
                                         >Create Account</button>
-                                        <div className="w-100 mt-3 d-flex justify-content-center align-items-center">
+                                        <button type="button" className="shadow btn btn-light w-100 py-2 mt-3 d-flex justify-content-center align-items-center"
+                                        onClick={() => window.open(`${API_URL}/auth/google`, '_blank').focus()}>
                                             <img src={google} style={{width: "7%"}}/>
-                                            <a className="ms-2 text-decoration-none fw-bold" href="#">Sign up with Google</a>
-                                        </div>
+                                            <span className="ms-2 fw-bold">Sign up with Google</span>
+                                        </button>
                                         <div className="mt-5 text-muted">
                                             <span>This site is protected by reCAPTCHA and the Google <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a> apply.</span>
                                         </div>

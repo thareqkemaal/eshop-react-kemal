@@ -40,7 +40,7 @@ const NavbarComponent = (props) => {
   // console.log("cek use selector NAVBAR", global);
 
   const btnLogout = () => {
-    Axios.get(API_URL + `/users?username=${username}&status=${status}`)
+    Axios.get(API_URL + `/auth?username=${username}&status=${status}`)
       .then((response) => {
         // console.log("btn logout", response.data);
         localStorage.removeItem("eshopLog");
@@ -93,7 +93,7 @@ const NavbarComponent = (props) => {
                 <ClipLoader color={"#545454"} size={40}/> : 
                 username && !props.loading ?
                 <div>
-                  {role === "Admin" ? (
+                  {role === "admin" ? (
                     <div>
                       <div className="d-flex align-items-center">
                         <Text className={`me-3 ${pathname == "/" || pathname == "/register" || 
@@ -151,7 +151,10 @@ const NavbarComponent = (props) => {
                               <MenuItem onClick={() => navigate("/products")}>
                                 Product
                               </MenuItem>
-                              <MenuItem onClick={() => navigate(`/cart`)}>Cart <Badge colorScheme="blue">{cart.length}</Badge></MenuItem>
+                              <MenuItem onClick={() => navigate(`/cart`)}>Cart<Badge colorScheme="blue">
+                                0</Badge>
+                              </MenuItem>
+                              <MenuItem onClick={() => navigate(`/usertransaction`)}>Transaction List</MenuItem>
                             </div>
                             <div className="d-flex align-items-center">
                               <div>

@@ -122,11 +122,11 @@ const ProductDetail = (props) => {
                 // buat case baru di userreducer lalu buat function baru di useraction
             dispatch(updateCartAction(res.data.cart))
             // 5. redirect ke cart page
+            navigate('/cart')
         }).catch((err) => {
             console.log(err)
         });
         
-        navigate('/cart')
 
     };
     
